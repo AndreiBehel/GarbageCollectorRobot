@@ -5,11 +5,16 @@ Motor::Motor(int leftDir, int rightDir, int leftPwm, int rightPwm) {
     leftMotorPwmPin = leftPwm;
     rightMotorPwmPin = rightPwm;
 
-    pinMode(leftDir, OUTPUT);
-    pinMode(rightDir, OUTPUT);
-    pinMode(leftPwm, OUTPUT);
-    pinMode(rightPwm, OUTPUT);
-
+    pinMode(leftMotorDirPin, OUTPUT);
+    pinMode(rightMotorDirPin, OUTPUT);
+    pinMode(leftMotorPwmPin, OUTPUT);
+    pinMode(rightMotorPwmPin, OUTPUT);
+    
+    digitalWrite(leftMotorPwmPin, LOW);
+    digitalWrite(rightMotorPwmPin, LOW);
+    digitalWrite(leftMotorDirPin, LOW);
+    digitalWrite(rightMotorDirPin, LOW);
+    
     isMoving = false;
   }
   
@@ -31,22 +36,25 @@ Motor::Motor(int leftDir, int rightDir, int leftPwm, int rightPwm) {
     analogWrite(rightMotorPwmPin, rightSpeed);
   }
   void Motor::moveFr(double duration) {
-	digitalWrite(leftMotorDirPin, HIGH);
-	digitalWrite(rightMotorDirPin, HIGH);
-	analogWrite(leftMotorPwmPin, 60);
-	analogWrite(rightMotorPwmPin, 60);
-	intervalOfUpdate = duration;
-
-	isMoving = true;
+    
+  	digitalWrite(leftMotorDirPin, HIGH);
+  	digitalWrite(rightMotorDirPin, HIGH);
+  	analogWrite(leftMotorPwmPin, 50);
+  	analogWrite(rightMotorPwmPin, 50);
+  	intervalOfUpdate = duration;
+    previousMillis = millis();
+    
+  	isMoving = true;
   }
   void Motor::moveBc(double duration) {
-	digitalWrite(leftMotorDirPin, LOW);
-	digitalWrite(rightMotorDirPin, LOW);
-	analogWrite(leftMotorPwmPin, 60);
-	analogWrite(rightMotorPwmPin, 60);
-	intervalOfUpdate = duration;
-
-	isMoving = true;
+  	digitalWrite(leftMotorDirPin, LOW);
+  	digitalWrite(rightMotorDirPin, LOW);
+  	analogWrite(leftMotorPwmPin, 120);
+  	analogWrite(rightMotorPwmPin, 120);
+  	intervalOfUpdate = duration;
+  
+  	isMoving = true;
+    previousMillis = millis();
   }
   
   void Motor::Update() {

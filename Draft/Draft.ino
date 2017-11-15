@@ -2,16 +2,16 @@
 #include "IRSensor.h"
 #include "Motor.h"
 
-const int LEFT_DIR_PIN = 9;
-const int LEFT_PWM_PIN = 9;
+const int LEFT_DIR_PIN = 3;
+const int LEFT_PWM_PIN = 4;
  
-const int RIGHT_DIR_PIN = 9; 
-const int RIGHT_PWM_PIN = 9;
+const int RIGHT_DIR_PIN = 5; 
+const int RIGHT_PWM_PIN = 6;
 
 const int SERVO_PIN = 9;
 
-const int FRONT_IR_PIN = 9;
-const int BACK_IR_PIN = 9;
+const int FRONT_IR_PIN = A0;
+const int BACK_IR_PIN = A1;
 
 const int ULTRASONIC_PIN = 9; 
 
@@ -36,7 +36,7 @@ class RequestHandler {
   boolean newMessage = false;
   
   char markerStart = '<';
-  char markerEnd = '\r';
+  char markerEnd = '>';
 
   char command[4];
   
@@ -48,7 +48,7 @@ class RequestHandler {
   }
  void receiveMessage() {
   char rc;
-  while(Serial.available() && !isReceiving) {
+  while(Serial.available() && !newMessage) {
     rc = Serial.read();
     if(isReceiving) {
       if(rc != markerEnd) {
@@ -60,28 +60,32 @@ class RequestHandler {
         newMessage = true;
       }
     }
-    if (rc = markerStart) {
+    else if (rc == markerStart) {
       isReceiving = true;
-    }
+    }  
   }
  }
  void processMessage() {
   if(newMessage) {
     parseData();
     if(command[0] == 'w') {
-      mt -> moveLeft(true, 20, 2000);
+      Serial.println("command w");
+      //mt -> moveLeft(true, 20, 2000);
       mt -> moveFr(2000);
     } else if(command[0] == 's') {
+      Serial.println("command s");
       mt -> moveBc(2000);
-      mt -> moveRight(false, 20, 2000);
+      //mt -> moveRight(false, 20, 2000);
     } else if(command[0] == 'a') {
        mt -> moveLeft(true, 20, 2000);
     } else if(command[0] == 'd') {
        mt -> moveRight(true, 20, 2000);
     } else if(command[0] == '1') {
-      Serial.print(frIrSensor -> getCurrentValue());
+      Serial.println("command pr fr sens");
+      Serial.println(frIrSensor -> getCurrentValue());
     } else if(command[0] == '2') {
-      Serial.print(bcIrSensor -> getCurrentValue());
+      Serial.println("command pr bc sens");
+      Serial.println(bcIrSensor -> getCurrentValue());
     } else if(command[0] == '3') {
       
     } else if(command[0] == '4') {
@@ -140,10 +144,6 @@ bool isBasketOpened() {
   } else {
     return true;
   }
-}
-
-double getTemperature() {
-  return 20;
 }
 
 void playSignal() {
