@@ -7,11 +7,11 @@ public:
 	void Update();
 	double getCurrentValue();
 private:
-	double getDistance();
 	int irPin; 
-	long intervalOfUpdate;
-	// These maintain the current state
 	double distValue;
+  long intervalOfUpdate;
 	unsigned long previousMillis;
+
+  double getDistance();
 };
 #endif
