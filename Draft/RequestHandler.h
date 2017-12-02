@@ -3,14 +3,17 @@
 #include <Arduino.h>
 #include "Motor.h"
 #include "IRSensor.h"
+#include "OpSystem.h"
+#include "MessageSender.h"
 
 class RequestHandler {
 private:
 	Motor* mt;
 	IRSensor* frIrSensor;
 	IRSensor* bcIrSensor;
-
-	//const byte numChars = 10;
+  OpSystem* opSystem;
+  MessageSender* messageSender;
+  
 	char receivedChars[10];
 	int index = 0;
 
@@ -20,12 +23,21 @@ private:
 	char markerStart = '<';
 	char markerEnd = '>';
 
-	char command[4];
-
-	void RequestHandler::parseData();
+	char command[3];
+  int commandParam[3] = {0,0,0};
+  
+	void parseData();
+ const char servo = 's';
+ const char backIR = 'b';
+ const char frontIR = 'f';
+ const char move = 'm';
+ const char moveForw = 'w';
+ const char moveBack = 'b';
 public:
-	RequestHandler(Motor* m, IRSensor* f, IRSensor* b);
+	RequestHandler(Motor* m, IRSensor* f, IRSensor* b, OpSystem* o, MessageSender* ms);
+  
 	void receiveMessage();
 	void processMessage();
+  void sendMessage();
 };
 #endif

@@ -23,6 +23,11 @@ double IRSensor::getCurrentValue() {
 }
 
 double IRSensor::getDistance() {
-	double V = analogRead(irPin);
+	double V = 0;
+  for (byte i = 0; i < numOfMes; i++) {
+    V += analogRead(irPin);
+  }	
+  V /= numOfMes;
+  V -= compensation;
 	return 2914. / (V + 5) - 1;
 }
