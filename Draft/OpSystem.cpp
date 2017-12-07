@@ -1,41 +1,40 @@
 #include "OpSystem.h"
-OpSystem::OpSystem(int servoPin, int buttonOp, int buttonCh) {
-	buttonOpen = buttonOp;
+OpSystem::OpSystem(int servoPin, int buttonCh) {
 	buttonCheck = buttonCh;
 	servPin = servoPin;
-
-  block = false;
   intervalOfUpdate = 2000;
   intervalBeforeClosing = 60000;
+  prevState = false;
+  state = false; 
 }
+
 void OpSystem::Update() {
+  if(prevState != state) {
+    if(state) {
+      Open();
+      previousMillis = millis();
+    } else {
+      Close();
+    }
+    prevState = state;
+  }
   unsigned long currentMillis = millis();
-    if( currentMillis - previousMillis >= intervalOfUpdate ) {
-      if( digitalRead(buttonOpen) == HIGH ) {
-        
-      }
-      block = false;
+    if ( prevState && ( currentMillis - previousMillis ) >= intervalBeforeClosing ) {
+      Close();
       previousMillis = currentMillis;
     }
 }
+
 void OpSystem::init() {
   servo.attach(servPin);
 }
-boolean OpSystem::Open() {
-  if (!block) {
+
+void OpSystem::Open() {
     servo.write(180);
-    block = true;
-  }
-  Serial.println(block);
-  return block;
 }
-boolean OpSystem::Close() {
-  if (!block) {
-    servo.write(0);
-    block = true;
-  }
-  Serial.println(block);
-  return block;
+
+void OpSystem::Close() {
+  servo.write(0);
 }
 
 

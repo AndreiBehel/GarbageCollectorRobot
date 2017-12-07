@@ -2,15 +2,12 @@
 #define REQUESTHANDLER_H
 #include <Arduino.h>
 #include "Motor.h"
-#include "IRSensor.h"
 #include "OpSystem.h"
 #include "MessageSender.h"
 
 class RequestHandler {
 private:
 	Motor* mt;
-	IRSensor* frIrSensor;
-	IRSensor* bcIrSensor;
   OpSystem* opSystem;
   MessageSender* messageSender;
   
@@ -34,7 +31,7 @@ private:
  const char moveForw = 'w';
  const char moveBack = 'b';
 public:
-	RequestHandler(Motor* m, IRSensor* f, IRSensor* b, OpSystem* o, MessageSender* ms);
+	RequestHandler(Motor* m, OpSystem* o, MessageSender* ms);
   
 	void receiveMessage();
 	void processMessage();

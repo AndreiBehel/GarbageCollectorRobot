@@ -1,8 +1,6 @@
 #include "RequestHandler.h"
-RequestHandler::RequestHandler(Motor* m, IRSensor* f, IRSensor* b, OpSystem* o, MessageSender* ms) {
+RequestHandler::RequestHandler(Motor* m, OpSystem* o, MessageSender* ms) {
 	mt = m;
-	frIrSensor = f;
-	bcIrSensor = b;
   opSystem = o;
   messageSender = ms;
 }
@@ -45,18 +43,17 @@ void RequestHandler::processMessage() {
 			mt -> moveRight(true, 20, 2000);
       
 		} else if (command[0] == 'm') {
-            
+              
     } else if (command[0] == frontIR) {
-			Serial.println("front sensor");
-			Serial.println(frIrSensor -> getCurrentValue());
+      messageSender -> add("front sensor\n");
+			messageSender -> setIrSendInterval(commandParam[0]);
       
 		} else if (command[0] == backIR) {
-			Serial.println("back sensor");
-			Serial.println(bcIrSensor -> getCurrentValue());
+      messageSender -> add("back sensor\n");
 
 		} else if (command[0] == servo) {
       Serial.print( "Open " );
-      Serial.println( opSystem -> Close() ? "true" : "false");
+      opSystem -> Close();
 		} else {
       
 		}

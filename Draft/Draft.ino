@@ -3,8 +3,18 @@
 #include "Motor.h"
 #include "RequestHandler.h"
 #include "OpSystem.h"
-#include "Servo.h"
 #include "MessageSender.h"
+
+#include <MsTimer2.h>
+
+#include "WiFlyHQ.h"
+#include <SoftwareSerial.h>
+SoftwareSerial wifiSerial(8,9);
+
+WiFly wifly;
+
+const char mySSID[] = "myssid";
+const char myPassword[] = "my-wpa-password";
 
 const int LEFT_DIR_PIN = 3;
 const int LEFT_PWM_PIN = 4;
@@ -29,42 +39,31 @@ const int BUZER_PIN = 9;
 Motor mt(LEFT_DIR_PIN, RIGHT_DIR_PIN, LEFT_PWM_PIN, RIGHT_PWM_PIN);
 IRSensor frIrSensor(FRONT_IR_PIN, 100);
 IRSensor bcIrSensor(BACK_IR_PIN, 100);
-OpSystem opSystem(SERVO_PIN, BUTTON_OP_PIN, CLOSE_DETECTOR_PIN);
-MessageSender ms;
-RequestHandler rh(&mt, &frIrSensor, &bcIrSensor, &opSystem, &ms);
+OpSystem opSystem(SERVO_PIN, CLOSE_DETECTOR_PIN);
+MessageSender ms(&frIrSensor, &bcIrSensor);
+RequestHandler rh(&mt, &opSystem, &ms);
 
 
-void setup(){
-  // opens serial port, sets data rate to 9600 bps
+void setup() {
   opSystem.init();
   Serial.begin(9600);
+  MsTimer2::set(500, interrupt);
+  MsTimer2::start();
 }
 
-void loop(){
-  frIrSensor.Update();
-  bcIrSensor.Update();
-  
-  mt.update();
+void loop() {
   
   rh.receiveMessage();
   rh.processMessage();
-  
+
+  ms.Update();
+}
+
+void interrupt(int timer) {
+  frIrSensor.Update();
+  bcIrSensor.Update();
+
+  mt.Update();
   opSystem.Update();
 }
-
-bool isBasketOpened() {
-  if(digitalRead(CLOSE_DETECTOR_PIN) == HIGH) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-void playSignal() {
-  tone(BUZER_PIN, 1000); // Send 1KHz sound signal...
-  delay(1000);        // ...for 1 sec
-  noTone(BUZER_PIN);     // Stop sound...
-  delay(1000);        // ...for 1sec
-}
-
 

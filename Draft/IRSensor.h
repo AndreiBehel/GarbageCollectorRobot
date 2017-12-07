@@ -5,7 +5,7 @@ class IRSensor {
 private:
   byte irPin; 
   byte numOfMes = 5;
-  byte compensation = 5;
+  byte compensation = 8;
   
   long intervalOfUpdate;
   unsigned long previousMillis;

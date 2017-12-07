@@ -19,7 +19,8 @@ public:
   void moveRight(bool rightDir, int rightSpeed, int duration);
   void moveFr(double duration);
   void moveBc(double duration);
-  void update();
+  void move(bool leftDir, byte leftSpeed, bool rightDir, byte rightSpeed, unsigned int duration);
+  void Update();
   void stopMoving();
 };
 
