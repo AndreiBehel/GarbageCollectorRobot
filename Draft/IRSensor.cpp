@@ -29,5 +29,5 @@ double IRSensor::getDistance() {
   }	
   V /= numOfMes;
   V -= compensation;
-	return 2914. / (V + 5) - 1;
+	return 6762. / (V - 9) - 4;
 }

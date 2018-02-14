@@ -35,6 +35,5 @@ public:
   
 	void receiveMessage();
 	void processMessage();
-  void sendMessage();
 };
 #endif

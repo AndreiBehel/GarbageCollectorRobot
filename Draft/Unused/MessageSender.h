@@ -2,6 +2,7 @@
   #define MESSAGESENDER_H
 #include <Arduino.h>
 #include "IRSensor.h"
+#include "Battery.h"
 
 class MessageSender {
 private:
@@ -19,10 +20,11 @@ private:
   
   IRSensor* frIrSensor;
   IRSensor* bcIrSensor;
+  Battery* battery;
   
   String message;
 public:
-  MessageSender(IRSensor* f, IRSensor* b);
+  MessageSender(IRSensor* f, IRSensor* b, Battery* bat);
   void add(String message);
   void send();
   void Update();

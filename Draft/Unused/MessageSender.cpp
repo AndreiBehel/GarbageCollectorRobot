@@ -1,7 +1,10 @@
 #include "MessageSender.h"
-MessageSender::MessageSender(IRSensor* f, IRSensor* b) {
+MessageSender::MessageSender(IRSensor* f, IRSensor* b, Battery* bat) {
   frIrSensor = f;
   bcIrSensor = b;
+  battery = bat;
+  
+  battery -> begin();
   
   intervalOfUpdate = 500;
   irSendInterval = 1000;
@@ -55,6 +58,7 @@ void MessageSender::addTempData() {
 
 void MessageSender::addBatteryData() {
   message += "<p,95>";
+  //message += "<p," + String(battery.level());
 }
 
 void MessageSender::setIrSendInterval(unsigned int v) {
