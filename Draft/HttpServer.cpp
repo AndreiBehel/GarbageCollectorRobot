@@ -1,12 +1,14 @@
 #include "HttpServer.h"
 
-HttpServer::HttpServer(Motor* m, OpSystem* o, IRSensor* f, IRSensor* b, WiFly* w) 
+HttpServer::HttpServer(Motor* m, OpSystem* o, IRSensor* f, IRSensor* b, Battery* bat, WiFly* w) 
 {
 	mt = m;
   opSystem = o;
   
   frIrSensor = f;
   bcIrSensor = b;
+
+  battery = bat;
   
   wifly = w;
 }
@@ -123,45 +125,56 @@ void HttpServer::receive()
   if (wifly->available() > 0) {
     /* See if there is a request */
     if (wifly->gets(buf, sizeof(buf))) {
+      //Request for index page
       if (strncmp_P(buf, PSTR("GET / "), 6) == 0) {
-        /* GET request */
-        Serial.println(F("Got GET request"));
-        
-        while (wifly->gets(buf, sizeof(buf)) > 0) {
-            /* Skip rest of request */
-        }
+        wifly->flushRx();       
         sendIndex();
-        Serial.println(F("Sent index page"));
+        
       } else if (strncmp_P(buf, PSTR("GET /f"), 6) == 0) {
-        /* GET request */
-        Serial.println(F("Got GET request for f"));        
-        while (wifly->gets(buf, sizeof(buf)) > 0) {/* Skip rest of request */}
-
+        wifly->flushRx();      
         send200(dtostrf(frIrSensor -> getCurrentValue(), 0, 2, convBuff));
         
       } else if (strncmp_P(buf, PSTR("GET /b"), 6) == 0) {
-        /* GET request */
-        Serial.println(F("Got GET request for b"));       
-        while (wifly->gets(buf, sizeof(buf)) > 0) {
-          /* Skip rest of request */
-        }
-
+        wifly->flushRx();      
         send200(dtostrf(bcIrSensor -> getCurrentValue(), 0, 2, convBuff));
         
-      } else if (strncmp_P(buf, PSTR("GET /f"), 6) == 0) {
+      } else if (strncmp_P(buf, PSTR("GET /c"), 6) == 0) {
+        wifly->flushRx();
+        send200(dtostrf(battery -> level(), 0, 2, convBuff));
         
-      } else if (strncmp_P(buf, PSTR("POST"), 4) == 0) {
-        /* Form POST */
-        char username[16];
-        Serial.println(F("Got POST"));
-  
-        /* Get posted field value */
-        if (wifly->match(F("user="))) {
-          wifly->gets(username, sizeof(username));
-          wifly->flushRx();    // discard rest of input
-          sendGreeting(username);
-          Serial.println(F("Sent greeting page"));
+      } else if (strncmp_P(buf, PSTR("GET /t"), 6) == 0) {
+        wifly->flushRx();   
+        send200(dtostrf(20.3, 0, 2, convBuff));
+        
+      }  else if (strncmp_P(buf, PSTR("GET /p"), 6) == 0) {
+        wifly->flushRx();   
+        send200(dtostrf(59, 0, 2, convBuff));
+        
+      } else if (strncmp_P(buf, PSTR("GET /w"), 6) == 0) {
+        wifly->flushRx();
+        getTime(buf, 7);
+        mt -> moveFr(2000);
+      } else if (strncmp_P(buf, PSTR("GET /s"), 6) == 0) {
+        wifly->flushRx();
+        getTime(buf, 7);
+        mt -> moveBc(2000);
+      } else if (strncmp_P(buf, PSTR("GET /m"), 6) == 0) {
+        wifly->flushRx();
+
+        if(parseReqStr(buf, params)) {
+          mt -> move(params[0], params[1], params[2], params[3], params[4]);
+        } else {
+          send404();
         }
+        
+      } else if (strncmp_P(buf, PSTR("GET /o"), 6) == 0) {
+        wifly->flushRx();
+        opSystem -> Open();
+        
+      } else if (strncmp_P(buf, PSTR("GET /k"), 6) == 0) {
+        wifly->flushRx();
+        opSystem -> Close();
+        
       } else {
         /* Unexpected request */
         Serial.print(F("Unexpected: "));
@@ -173,3 +186,71 @@ void HttpServer::receive()
     }
   }
 }
+/*get time from a string of GET request  
+ * GET /w?t=10&nocache=29860.903564600583 HTTP/1.1
+ */
+int HttpServer::getTime(char* str, byte pos) {
+  int time = -1;
+  String strNum = "";
+  
+  if(str[pos++] == 't' && str[pos++] == '=' && isDigit(str[pos])) {
+    while(isDigit(str[pos])) {
+      strNum += str[pos++];
+    }
+    time = strNum.toInt();
+  }
+  
+  return time;
+}
+
+bool HttpServer::parseReqStr(char* str, byte* params) {
+  bool correct = true; 
+  byte pos = 7;
+  String strNum = "";
+  
+  if(str[pos++] == 'l' && str[pos++] == '=' && isDigit(str[pos])) {
+    while(isDigit(str[pos])) {
+      strNum += str[pos++];
+    }
+    params[0] = strNum.toInt();
+  } else { 
+    correct = false;
+  }
+  
+  if(str[pos++] == '&' && str[pos++] == 'd' && str[pos++] == '=' && isDigit(str[pos])) {
+    str = "" + str[pos++];
+    params[1] = strNum.toInt();
+  } else { 
+    correct = false;
+  }
+
+  if(str[pos++] == '&' && str[pos++] == 'r' && str[pos++] == '=' && isDigit(str[pos])) {
+    str = "";
+    while(isDigit(str[pos])) {
+      strNum += str[pos++];
+    }
+    params[2] = strNum.toInt();
+  } else { 
+    correct = false;
+  }
+
+  if(str[pos++] == '&' && str[pos++] == 'd' && str[pos++] == '=' && isDigit(str[pos])) {
+    str = "" + str[pos++];
+    params[3] = strNum.toInt();
+  } else { 
+    correct = false;
+  }
+
+  if(str[pos++] == '&' && str[pos++] == 't' && str[pos++] == '=' && isDigit(str[pos])) {
+    str = "";
+    while(isDigit(str[pos])) {
+      strNum += str[pos++];
+    }
+    params[4] = strNum.toInt();
+  } else { 
+    correct = false;
+  }
+  
+  return correct;
+}
+

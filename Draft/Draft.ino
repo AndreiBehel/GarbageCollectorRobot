@@ -2,9 +2,7 @@
 #include <WiFlyHQ.h>
 #include "IRSensor.h"
 #include "Motor.h"
-#include "RequestHandler.h"
 #include "OpSystem.h"
-#include "MessageSender.h"
 #include "Battery.h"
 #include "HttpServer.h"
 
@@ -38,22 +36,27 @@ const int CLOSE_DETECTOR_PIN = 20;
 
 //Piezo Speaker
 const int BUZER_PIN = 9; 
-//*******************************************
 
+/*
+ * Initialization of classes
+ */
 Motor mt(LEFT_DIR_PIN, RIGHT_DIR_PIN, LEFT_PWM_PIN, RIGHT_PWM_PIN);
 IRSensor frIrSensor(FRONT_IR_PIN, 100);
 IRSensor bcIrSensor(BACK_IR_PIN, 100);
 OpSystem opSystem(SERVO_PIN, CLOSE_DETECTOR_PIN);
-Battery battery(3400, 4600, 15, 3);
-MessageSender ms(&frIrSensor, &bcIrSensor, &battery);
+Battery battery(7400, 8400, A0, 3);
+//MessageSender ms(&frIrSensor, &bcIrSensor, &battery);
 //RequestHandler rh(&mt, &opSystem, &ms);
-HttpServer httpserver(&mt, &opSystem, &frIrSensor, &bcIrSensor, &wifly);
+HttpServer httpserver(&mt, &opSystem, &frIrSensor, &bcIrSensor, &battery, &wifly);
 
 void setup() {
+  battery.begin(5000, 1.68);
+  opSystem.init();
   setupWiFI();
   
   opSystem.init();
   Serial.begin(9600);
+  
   MsTimer2::set(500, interrupt);
   MsTimer2::start();
 }
@@ -61,7 +64,7 @@ void setup() {
 void loop() {
   httpserver.receive();
 
-  ms.Update();
+  opSystem.Update();
 }
 
 void interrupt(int timer) {

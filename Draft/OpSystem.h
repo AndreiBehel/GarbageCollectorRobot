@@ -6,7 +6,6 @@ class OpSystem {
 private:
   byte servPin;
   
-  long intervalOfUpdate;
   long intervalBeforeClosing;
   unsigned long previousMillis;
   
@@ -15,6 +14,8 @@ private:
   Servo servo;
   byte buttonCheck;
 
+  void Op();
+  void Cl();
 public:
 	OpSystem(int servo, int buttonCh);
 	void Update();
