@@ -51,10 +51,9 @@ HttpServer httpserver(&mt, &opSystem, &frIrSensor, &bcIrSensor, &battery, &wifly
 
 void setup() {
   battery.begin(5000, 1.68);
-  opSystem.init();
+  //opSystem.init();
   setupWiFI();
   
-  opSystem.init();
   Serial.begin(9600);
   
   MsTimer2::set(500, interrupt);
@@ -64,7 +63,6 @@ void setup() {
 void loop() {
   httpserver.receive();
 
-  opSystem.Update();
 }
 
 void interrupt(int timer) {
@@ -72,7 +70,7 @@ void interrupt(int timer) {
   bcIrSensor.Update();
 
   mt.Update();
-  opSystem.Update();
+  //opSystem.Update();
 }
 
 void setupWiFI() 

@@ -2,6 +2,7 @@
 OpSystem::OpSystem(int servoPin, int buttonCh) {
 	buttonCheck = buttonCh;
 	servPin = servoPin;
+ 
   intervalBeforeClosing = 60000;
   prevState = false;
   state = false; 
@@ -18,14 +19,14 @@ void OpSystem::Update() {
     prevState = state;
   }
   unsigned long currentMillis = millis();
-    if ( prevState && ( currentMillis - previousMillis ) >= intervalBeforeClosing ) {
-      Cl();
-      previousMillis = currentMillis;
-    }
+  if ( prevState && ( currentMillis - previousMillis ) >= intervalBeforeClosing ) {
+    Cl();
+  }
 }
 
 void OpSystem::init() {
   servo.attach(servPin);
+  servo.write(0);
 }
 
 void OpSystem::Open() {
@@ -37,7 +38,7 @@ void OpSystem::Close() {
 }
 
 void OpSystem::Op() {
-    servo.write(180);
+    servo.write(150);
 }
 
 void OpSystem::Cl() {

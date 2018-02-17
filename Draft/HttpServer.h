@@ -25,13 +25,13 @@ private:
   void send200(char* str);
 
 	char convBuff[10];
-  int getTime(char* str);
+  byte getTime(char* str, byte pos);
   bool HttpServer::parseReqStr(char* str, byte* params);
   byte params[5];
   
 public:
 	void receive();
 	HttpServer(Motor* m, OpSystem* o, IRSensor* f, IRSensor* b, Battery* bat, WiFly* wifly);
-  getTime(char* str, byte pos);
+  
 };
 #endif

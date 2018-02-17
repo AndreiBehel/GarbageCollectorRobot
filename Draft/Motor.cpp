@@ -46,11 +46,11 @@ Motor::Motor(int leftDir, int rightDir, int leftPwm, int rightPwm) {
   
   void Motor::moveBc(double duration) {
   	digitalWrite(leftMotorDirPin, LOW);
-  	digitalWrite(rightMotorDirPin, HIGH);
+  	digitalWrite(rightMotorDirPin, LOW);
     digitalWrite(leftMotorPwmPin, HIGH);
     //digitalWrite(rightMotorPwmPin, LOW);
     //analogWrite(leftMotorPwmPin, 250);
-    analogWrite(rightMotorPwmPin, 0);
+    digitalWrite(rightMotorPwmPin, HIGH);
   	intervalOfUpdate = duration;
     previousMillis = millis();
     
