@@ -197,14 +197,14 @@ bool HttpServer::parseReqStr(char* str, byte* params) {
   byte pos = 7;
   String strNum = "";
 
-  if(str[pos++] == '&' && str[pos++] == 'a' && str[pos++] == '=' && isDigit(str[pos])) {
-    str = "" + str[pos++];
+  if(str[pos++] == 'a' && str[pos++] == '=' && isDigit(str[pos])) {
+    strNum = "" + str[pos++];
     params[0] = strNum.toInt();
   } else { 
     correct = false;
   }
   
-  if(str[pos++] == 'b' && str[pos++] == '=' && isDigit(str[pos])) {
+  if(str[pos++] == '&' && str[pos++] == 'b' && str[pos++] == '=' && isDigit(str[pos])) {
     while(isDigit(str[pos])) {
       strNum += str[pos++];
     }
@@ -214,14 +214,14 @@ bool HttpServer::parseReqStr(char* str, byte* params) {
   }
 
   if(str[pos++] == '&' && str[pos++] == 'c' && str[pos++] == '=' && isDigit(str[pos])) {
-    str = "" + str[pos++];
+    strNum = "" + str[pos++];
     params[2] = strNum.toInt();
   } else { 
     correct = false;
   }
   
   if(str[pos++] == '&' && str[pos++] == 'd' && str[pos++] == '=' && isDigit(str[pos])) {
-    str = "";
+    strNum = "";
     while(isDigit(str[pos])) {
       strNum += str[pos++];
     }
@@ -231,7 +231,7 @@ bool HttpServer::parseReqStr(char* str, byte* params) {
   }
 
   if(str[pos++] == '&' && str[pos++] == 't' && str[pos++] == '=' && isDigit(str[pos])) {
-    str = "";
+    strNum = "";
     while(isDigit(str[pos])) {
       strNum += str[pos++];
     }
