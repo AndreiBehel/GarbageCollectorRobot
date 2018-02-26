@@ -85,91 +85,166 @@ void HttpServer::send200(char* str)
 {
     wifly->println(F("HTTP/1.1 200 OK"));
     wifly->println(F("Content-Type: text/html"));
+    wifly->println(F("Connection: close"));
+    //wifly->println(F("Cache-Control: no-cache"));
     wifly->println(F("Transfer-Encoding: chunked"));
     wifly->println();
     
     wifly->sendChunkln(str);
     wifly->sendChunkln();
 }
-
+byte code = -1;
 void HttpServer::receive()
 {
   if (wifly->available() > 0) {
+    code = wifly->multiMatch_P(20, 10, F("GET /f"), F("GET /b"), F("GET /w"), F("GET /s"),
+    F("GET /m"), F("GET /o"), F("GET /k"), F("GET /t"), F("GET /c"), F("GET / "));
+    
+    switch(code) {
+      case 0:
+        Serial.println("#f");
+        send200(dtostrf(frIrSensor -> getCurrentValue(), 0, 2, convBuff));
+        break;
+      case 1:
+        Serial.println("#b");
+        send200(dtostrf(bcIrSensor -> getCurrentValue(), 0, 2, convBuff));
+        break;
+      case 2:
+        Serial.println("#w");
+        wifly->gets(buf, sizeof(buf), 10);
+        mt -> moveFr(getTime(buf, 1) * 100);
+        send200(NULL);
+        break;
+      case 3:
+        Serial.println("#s");
+        wifly->gets(buf, sizeof(buf), 10);
+        mt -> moveBc(getTime(buf, 1) * 100);
+        send200(NULL);
+        break;
+      case 4:
+        Serial.println("#m");
+        wifly->gets(buf, sizeof(buf), 10);
+        if(parseReqStr(buf, params, 1)) {
+          mt -> move(params[0], params[1], params[2], params[3], params[4] * 100);
+          Serial.print(params[0]);
+          Serial.print(params[1]);
+          Serial.print(params[2]);
+          Serial.println(params[3]);
+          send200(NULL);
+        } else {
+          send404();
+        }
+        break;
+      case 5:
+        Serial.println("#open");
+        opSystem -> Open();
+        send200(NULL);
+        break;
+      case 6:
+        Serial.println("#close");
+        opSystem -> Close();
+        send200(NULL);
+        break;
+      case 7:
+        Serial.println("#temperature");
+        send200(dtostrf(frIrSensor -> getCurrentValue(), 0, 2, convBuff));
+        break;
+      case 8:
+        Serial.println("#charge");
+        send200(dtostrf(83.5, 0, 2, convBuff));
+        break;
+      case 9:
+        Serial.println("#page");
+        sendIndex();
+        break;
+      default: /* timeout */
+        //Serial.println("#timeout");
+        break;
+    }
     /* See if there is a request */
-    if (wifly->gets(buf, sizeof(buf), 200)) {
+    /*if(wifly->match("GET /b", 10)) {
+        Serial.println("#b");
+        //wifly->flushRx(10);      
+        send200(dtostrf(random(100, 200) / 10, 0, 2, convBuff));
+        
+    } */
+    /*if (wifly->gets(buf, sizeof(buf), 10)) {
+      Serial.println(buf);
       //Request for index page
       if (strncmp_P(buf, PSTR("GET / "), 6) == 0) {
-        wifly->flushRx(200);       
+        wifly->flushRx(100);       
         sendIndex();
         
       } else if (strncmp_P(buf, PSTR("GET /f"), 6) == 0) {
-        wifly->flushRx(200);      
+        while (wifly->gets(buf, sizeof(buf)) > 0) {}      
         send200(dtostrf(frIrSensor -> getCurrentValue(), 0, 2, convBuff));
         
       } else if (strncmp_P(buf, PSTR("GET /b"), 6) == 0) {
-        wifly->flushRx(200);      
+        wifly->flushRx(100);      
         send200(dtostrf(bcIrSensor -> getCurrentValue(), 0, 2, convBuff));
         
       } else if (strncmp_P(buf, PSTR("GET /c"), 6) == 0) {
-        wifly->flushRx(200);
+        wifly->flushRx(100);
         send200(dtostrf(battery -> level(), 0, 2, convBuff));
         
       } else if (strncmp_P(buf, PSTR("GET /t"), 6) == 0) {
-        wifly->flushRx(200);   
+        wifly->flushRx(100);   
         send200(dtostrf(20.3, 0, 2, convBuff));
         
       }  else if (strncmp_P(buf, PSTR("GET /p"), 6) == 0) {
-        wifly->flushRx(200);   
+        wifly->flushRx(100);   
         send200(dtostrf(59, 0, 2, convBuff));
                 
       } else if (strncmp_P(buf, PSTR("GET /q"), 6) == 0) {
-        wifly->flushRx(200);
+        wifly->flushRx(100);
         
         mt -> stopMoving();
         send200(NULL);
         
       } else if (strncmp_P(buf, PSTR("GET /w"), 6) == 0) {
-        wifly->flushRx(200);
+        wifly->flushRx(100);
         mt -> moveFr(getTime(buf, 7) * 100);
         send200(NULL);
         
       } else if (strncmp_P(buf, PSTR("GET /s"), 6) == 0) {
-        wifly->flushRx(200);
+        wifly->flushRx(100);
         
         mt -> moveBc(getTime(buf, 7) * 100);
         send200(NULL);
         
       } else if (strncmp_P(buf, PSTR("GET /m"), 6) == 0) {
-        wifly->flushRx(200);
+        wifly->flushRx(100);
 
         if(parseReqStr(buf, params)) {
           mt -> move(params[0], params[1], params[2], params[3], params[4] * 100);
+          send200(NULL);
         } else {
           send404();
         }
         
       } else if (strncmp_P(buf, PSTR("GET /o"), 6) == 0) {
-        wifly->flushRx(200);
+        wifly->flushRx(100);
         opSystem -> Open();
         send200(NULL);
         
       } else if (strncmp_P(buf, PSTR("GET /k"), 6) == 0) {
-        wifly->flushRx(200);
+        wifly->flushRx(100);
         opSystem -> Close();
         send200(NULL);
         
-      } else {
-        /* Unexpected request */
+      } else if (strncmp_P(buf, PSTR("GET /"), 6) == 0) {
         Serial.print(F("Unexpected: "));
         Serial.println(buf);
-        wifly->flushRx(200);    // discard rest of input
+        wifly->flushRx(100);    // discard rest of input
         Serial.println(F("Sending 404"));
-        send404();
+        send404();    
+      } else {
+        
       }
-      wifly->close();
-    }
+    }*/
   }
 }
+
 /*get time from a string of GET request  
  * GET /w?t=10&nocache=29860.903564600583 HTTP/1.1
  */
@@ -189,12 +264,13 @@ byte HttpServer::getTime(char* str, byte pos) {
   }
   return time;
 }
-/*
- * 192.168.43.3/m?a=0&b=255&c=0&d=255&t=30
+
+/*Processing of moving request
+ *GET /m?a=0&b=255&c=0&d=255&t=30
+ *http://192.168.43.3/m?a=1&b=255&c=0&d=255&t=30
  */
-bool HttpServer::parseReqStr(char* str, byte* params) {
+bool HttpServer::parseReqStr(char* str, byte* params, byte pos) {
   bool correct = true; 
-  byte pos = 7;
   String strNum = "";
 
   if(str[pos++] == 'a' && str[pos++] == '=' && isDigit(str[pos])) {

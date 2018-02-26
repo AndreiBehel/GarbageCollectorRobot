@@ -8,10 +8,6 @@
 
 #include <MsTimer2.h>
 
-SoftwareSerial wifiSerial(2,3);
-WiFly wifly;
-char buf[80];
-
 /* Change these to match your WiFi network */
 const char mySSID[] = "MEIZU";
 const char myPassword[] = "641_7540";
@@ -27,7 +23,7 @@ const int FRONT_IR_PIN = A0;
 const int BACK_IR_PIN = A1;
 
 /*Servo pin connection*/
-const int SERVO_PIN = 11;
+const int SERVO_PIN = 10;
 
 const int ULTRASONIC_PIN = 9; 
 
@@ -40,29 +36,35 @@ const int BUZER_PIN = 9;
 /*
  * Initialization of classes
  */
+SoftwareSerial wifiSerial(2,3);
+WiFly wifly;
+
 Motor mt(LEFT_DIR_PIN, RIGHT_DIR_PIN, LEFT_PWM_PIN, RIGHT_PWM_PIN);
 IRSensor frIrSensor(FRONT_IR_PIN, 100);
 IRSensor bcIrSensor(BACK_IR_PIN, 100);
 OpSystem opSystem(SERVO_PIN, CLOSE_DETECTOR_PIN);
 Battery battery(7400, 8400, A0, 3);
-//MessageSender ms(&frIrSensor, &bcIrSensor, &battery);
-//RequestHandler rh(&mt, &opSystem, &ms);
 HttpServer httpserver(&mt, &opSystem, &frIrSensor, &bcIrSensor, &battery, &wifly);
+
+char buf[80];
 
 void setup() {
   battery.begin(5000, 1.68);
-  //opSystem.init();
+  opSystem.init();
   setupWiFI();
   
-  Serial.begin(9600);
-  
-  MsTimer2::set(500, interrupt);
-  MsTimer2::start();
+  //MsTimer2::set(500, interrupt);
+  //MsTimer2::start();
 }
 
 void loop() {
+  frIrSensor.Update();
+  bcIrSensor.Update();
+  
   httpserver.receive();
-
+  
+  mt.Update();
+  opSystem.Update();
 }
 
 void interrupt(int timer) {
@@ -86,6 +88,7 @@ void setupWiFI()
     wifly.terminal();
   }
 
+  //wifly.terminal();
   connection();
   Serial.println(F("Ready"));
 }

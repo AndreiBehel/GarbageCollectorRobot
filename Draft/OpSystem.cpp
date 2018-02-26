@@ -27,6 +27,8 @@ void OpSystem::Update() {
 void OpSystem::init() {
   servo.attach(servPin);
   servo.write(0);
+  delay(900);
+  servo.detach();
 }
 
 void OpSystem::Open() {
@@ -38,10 +40,16 @@ void OpSystem::Close() {
 }
 
 void OpSystem::Op() {
-    servo.write(150);
+  servo.attach(servPin);
+  servo.write(170);
+  delay(900);
+  servo.detach();
 }
 
 void OpSystem::Cl() {
+  servo.attach(servPin);
   servo.write(0);
+  delay(900);
+  servo.detach();
 }
 

@@ -36,8 +36,7 @@ Motor::Motor(int leftDir, int rightDir, int leftPwm, int rightPwm) {
   	digitalWrite(rightMotorDirPin, HIGH);
     digitalWrite(leftMotorPwmPin, LOW);
     digitalWrite(rightMotorPwmPin, LOW);
-    //analogWrite(leftMotorPwmPin, 0);
-    //analogWrite(rightMotorPwmPin, 200);
+
   	intervalOfUpdate = duration;
     previousMillis = millis();
     
@@ -48,9 +47,8 @@ Motor::Motor(int leftDir, int rightDir, int leftPwm, int rightPwm) {
   	digitalWrite(leftMotorDirPin, LOW);
   	digitalWrite(rightMotorDirPin, LOW);
     digitalWrite(leftMotorPwmPin, HIGH);
-    //digitalWrite(rightMotorPwmPin, LOW);
-    //analogWrite(leftMotorPwmPin, 250);
     digitalWrite(rightMotorPwmPin, HIGH);
+    
   	intervalOfUpdate = duration;
     previousMillis = millis();
     
@@ -86,5 +84,10 @@ Motor::Motor(int leftDir, int rightDir, int leftPwm, int rightPwm) {
     }
     analogWrite(leftMotorPwmPin, leftSpeed);
     analogWrite(rightMotorPwmPin, rightSpeed);
+
+    intervalOfUpdate = duration;
+    previousMillis = millis();
+    
+    isMoving = true;   
   }
 

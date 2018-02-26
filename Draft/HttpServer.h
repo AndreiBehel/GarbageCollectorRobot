@@ -26,7 +26,7 @@ private:
 
 	char convBuff[10];
   byte getTime(char* str, byte pos);
-  bool HttpServer::parseReqStr(char* str, byte* params);
+  bool parseReqStr(char* str, byte* params, byte pos);
   byte params[5];
   
 public:
