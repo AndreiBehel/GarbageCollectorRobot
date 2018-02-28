@@ -28,6 +28,6 @@ double IRSensor::getDistance() {
     V += analogRead(irPin);
   }	
   V /= numOfMes;
-  V -= compensation;
-	return 6762. / (V - 9) - 4;
+  //V -= compensation;
+	return 6787 / V;
 }

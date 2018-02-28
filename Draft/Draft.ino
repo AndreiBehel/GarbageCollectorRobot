@@ -6,7 +6,7 @@
 #include "Battery.h"
 #include "HttpServer.h"
 
-#include <MsTimer2.h>
+//#include <MsTimer2.h>
 
 /* Change these to match your WiFi network */
 const char mySSID[] = "MEIZU";
@@ -16,8 +16,8 @@ const char myPassword[] = "641_7540";
 const int LEFT_DIR_PIN = 4;
 const int LEFT_PWM_PIN = 5;
  
-const int RIGHT_DIR_PIN = 6; 
-const int RIGHT_PWM_PIN = 7;
+const int RIGHT_DIR_PIN = 7; 
+const int RIGHT_PWM_PIN = 6;
 
 const int FRONT_IR_PIN = A0;
 const int BACK_IR_PIN = A1;
@@ -67,13 +67,13 @@ void loop() {
   opSystem.Update();
 }
 
-void interrupt(int timer) {
+/*void interrupt(int timer) {
   frIrSensor.Update();
   bcIrSensor.Update();
 
   mt.Update();
   //opSystem.Update();
-}
+}*/
 
 void setupWiFI() 
 {
@@ -88,7 +88,6 @@ void setupWiFI()
     wifly.terminal();
   }
 
-  //wifly.terminal();
   connection();
   Serial.println(F("Ready"));
 }

@@ -93,68 +93,64 @@ void HttpServer::send200(char* str)
     wifly->sendChunkln(str);
     wifly->sendChunkln();
 }
-byte code = -1;
+
 void HttpServer::receive()
 {
   if (wifly->available() > 0) {
-    code = wifly->multiMatch_P(20, 10, F("GET /f"), F("GET /b"), F("GET /w"), F("GET /s"),
+    byte code = wifly->multiMatch_P(20, 10, F("GET /f"), F("GET /b"), F("GET /w"), F("GET /s"),
     F("GET /m"), F("GET /o"), F("GET /k"), F("GET /t"), F("GET /c"), F("GET / "));
     
     switch(code) {
       case 0:
-        Serial.println("#f");
+        Serial.println(F("#frIr"));
         send200(dtostrf(frIrSensor -> getCurrentValue(), 0, 2, convBuff));
         break;
       case 1:
-        Serial.println("#b");
+        Serial.println(F("#bcIr"));
         send200(dtostrf(bcIrSensor -> getCurrentValue(), 0, 2, convBuff));
         break;
       case 2:
-        Serial.println("#w");
+        Serial.println(F("#w"));
         wifly->gets(buf, sizeof(buf), 10);
         mt -> moveFr(getTime(buf, 1) * 100);
         send200(NULL);
         break;
       case 3:
-        Serial.println("#s");
+        Serial.println(F("#s"));
         wifly->gets(buf, sizeof(buf), 10);
         mt -> moveBc(getTime(buf, 1) * 100);
         send200(NULL);
         break;
       case 4:
-        Serial.println("#m");
+        Serial.println(F("#move"));
         wifly->gets(buf, sizeof(buf), 10);
         if(parseReqStr(buf, params, 1)) {
           mt -> move(params[0], params[1], params[2], params[3], params[4] * 100);
-          Serial.print(params[0]);
-          Serial.print(params[1]);
-          Serial.print(params[2]);
-          Serial.println(params[3]);
           send200(NULL);
         } else {
           send404();
         }
         break;
       case 5:
-        Serial.println("#open");
+        Serial.println(F("#open"));
         opSystem -> Open();
         send200(NULL);
         break;
       case 6:
-        Serial.println("#close");
+        Serial.println(F("#close"));
         opSystem -> Close();
         send200(NULL);
         break;
       case 7:
-        Serial.println("#temperature");
+        Serial.println(F("#temperature"));
         send200(dtostrf(frIrSensor -> getCurrentValue(), 0, 2, convBuff));
         break;
       case 8:
-        Serial.println("#charge");
+        Serial.println(F("#charge"));
         send200(dtostrf(83.5, 0, 2, convBuff));
         break;
       case 9:
-        Serial.println("#page");
+        Serial.println(F("#page"));
         sendIndex();
         break;
       default: /* timeout */
@@ -274,13 +270,14 @@ bool HttpServer::parseReqStr(char* str, byte* params, byte pos) {
   String strNum = "";
 
   if(str[pos++] == 'a' && str[pos++] == '=' && isDigit(str[pos])) {
-    strNum = "" + str[pos++];
+    strNum += str[pos++];
     params[0] = strNum.toInt();
   } else { 
     correct = false;
   }
   
   if(str[pos++] == '&' && str[pos++] == 'b' && str[pos++] == '=' && isDigit(str[pos])) {
+    strNum = "";
     while(isDigit(str[pos])) {
       strNum += str[pos++];
     }
@@ -290,7 +287,8 @@ bool HttpServer::parseReqStr(char* str, byte* params, byte pos) {
   }
 
   if(str[pos++] == '&' && str[pos++] == 'c' && str[pos++] == '=' && isDigit(str[pos])) {
-    strNum = "" + str[pos++];
+    strNum = "";
+    strNum += str[pos++];
     params[2] = strNum.toInt();
   } else { 
     correct = false;
