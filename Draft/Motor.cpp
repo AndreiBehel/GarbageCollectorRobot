@@ -74,11 +74,13 @@ Motor::Motor(int leftDir, int rightDir, int leftPwm, int rightPwm) {
   void Motor::move(bool leftDir, byte leftSpeed, bool rightDir, byte rightSpeed, unsigned int duration) {
     if(leftDir){
        digitalWrite(leftMotorDirPin, HIGH);
+       leftSpeed = 255 - leftSpeed;
     } else {
       digitalWrite(leftMotorDirPin, LOW);
     }
     if(rightDir){
       digitalWrite(rightMotorDirPin, HIGH);
+      rightSpeed = 255 - rightSpeed;
     } else {
       digitalWrite(rightMotorDirPin, LOW);
     }

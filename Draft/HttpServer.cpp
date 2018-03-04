@@ -143,7 +143,7 @@ void HttpServer::receive()
         break;
       case 7:
         Serial.println(F("#temperature"));
-        send200(dtostrf(frIrSensor -> getCurrentValue(), 0, 2, convBuff));
+        send200(dtostrf(21.2, 0, 2, convBuff));
         break;
       case 8:
         Serial.println(F("#charge"));

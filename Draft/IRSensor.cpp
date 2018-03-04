@@ -24,10 +24,31 @@ double IRSensor::getCurrentValue() {
 
 double IRSensor::getDistance() {
 	double V = 0;
+  //use medial filter
+  int arr[5];
   for (byte i = 0; i < numOfMes; i++) {
-    V += analogRead(irPin);
+    //V += analogRead(irPin);
+    arr[i] = 6787 / analogRead(irPin);
   }	
-  V /= numOfMes;
+  
+  qsort(arr, numOfMes, sizeof(int), compare);
+  
+  //V /= numOfMes;
   //V -= compensation;
-	return 6787 / V;
+	//return 6787 / V;
+  return arr[2];
 }
+
+int IRSensor::compare( const void* a, const void* b)
+{
+  int int_a = *((int*)a);
+  int int_b = *((int*)b);
+  
+  if (int_a == int_b)
+    return 0;
+  else if (int_a < int_b) 
+    return -1;
+  else 
+    return 1;
+}
+
