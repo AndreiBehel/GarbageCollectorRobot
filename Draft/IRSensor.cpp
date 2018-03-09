@@ -25,7 +25,7 @@ double IRSensor::getCurrentValue() {
 double IRSensor::getDistance() {
 	double V = 0;
   //use medial filter
-  int arr[5];
+  int arr[numOfMes];
   for (byte i = 0; i < numOfMes; i++) {
     //V += analogRead(irPin);
     arr[i] = 6787 / analogRead(irPin);
