@@ -11,13 +11,13 @@ private:
   long intervalOfUpdate;
   unsigned long previousMillis;
   
-  double distValue;
+  int distValue;
  
   double getDistance();
 public:
-	IRSensor(int pin, long interval);
+	IRSensor(byte pin, long interval);
  
 	void Update();
-	double getCurrentValue();
+	int getCurrentValue();
 };
 #endif

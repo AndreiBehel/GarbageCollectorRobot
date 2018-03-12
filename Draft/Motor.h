@@ -13,15 +13,19 @@ private:
   
   bool isMoving;  
 public:
-  Motor(int leftDir, int rightDir, int leftPwm, int rightPwm);
+  Motor(byte leftDir, byte rightDir, byte leftPwm, byte rightPwm);
   
-  void moveLeft(bool leftDir, int leftSpeed, int duration);
-  void moveRight(bool rightDir, int rightSpeed, int duration);
-  void moveFr(double duration);
-  void moveBc(double duration);
+  void moveLeft(bool leftDir, int leftSpeed, unsigned int duration);
+  void moveRight(bool rightDir, int rightSpeed, unsigned int duration);
+  void moveFr(unsigned int duration);
+  void moveBc(unsigned int duration);
   void move(bool leftDir, byte leftSpeed, bool rightDir, byte rightSpeed, unsigned int duration);
   void Update();
   void stopMoving();
+
+  boolean moving() {
+    return isMoving;
+  }
 };
 
 #endif

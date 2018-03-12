@@ -1,5 +1,5 @@
 #include "Motor.h"  
-Motor::Motor(int leftDir, int rightDir, int leftPwm, int rightPwm) {
+Motor::Motor(byte leftDir, byte rightDir, byte leftPwm, byte rightPwm) {
     leftMotorDirPin = leftDir;
     rightMotorDirPin = rightDir;
     leftMotorPwmPin = leftPwm;
@@ -13,7 +13,7 @@ Motor::Motor(int leftDir, int rightDir, int leftPwm, int rightPwm) {
     stopMoving();
   }
 
-  void Motor::moveLeft(bool leftDir, int leftSpeed, int duration) {
+  void Motor::moveLeft(bool leftDir, int leftSpeed, unsigned int duration) {
     if(leftDir){
        digitalWrite(leftMotorDirPin, HIGH);
     } else {
@@ -22,7 +22,7 @@ Motor::Motor(int leftDir, int rightDir, int leftPwm, int rightPwm) {
     analogWrite(leftMotorPwmPin, leftSpeed);
   }
 
-  void Motor::moveRight(bool rightDir, int rightSpeed, int duration) { 
+  void Motor::moveRight(bool rightDir, int rightSpeed, unsigned int duration) { 
     if(rightDir){
        digitalWrite(rightMotorDirPin, HIGH);
     } else {
@@ -31,7 +31,7 @@ Motor::Motor(int leftDir, int rightDir, int leftPwm, int rightPwm) {
     analogWrite(rightMotorPwmPin, rightSpeed);
   }
   
-  void Motor::moveFr(double duration) {
+  void Motor::moveFr(unsigned int duration) {
   	digitalWrite(leftMotorDirPin, HIGH);
   	digitalWrite(rightMotorDirPin, HIGH);
     digitalWrite(leftMotorPwmPin, LOW);
@@ -43,7 +43,7 @@ Motor::Motor(int leftDir, int rightDir, int leftPwm, int rightPwm) {
   	isMoving = true;
   }
   
-  void Motor::moveBc(double duration) {
+  void Motor::moveBc(unsigned int duration) {
   	digitalWrite(leftMotorDirPin, LOW);
   	digitalWrite(rightMotorDirPin, LOW);
     digitalWrite(leftMotorPwmPin, HIGH);

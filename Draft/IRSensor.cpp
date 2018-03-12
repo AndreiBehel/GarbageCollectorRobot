@@ -1,5 +1,5 @@
 #include "IRSensor.h"
-IRSensor::IRSensor(int pin, long interval) {
+IRSensor::IRSensor(byte pin, long interval) {
 	irPin = pin;
 	pinMode(irPin, INPUT);
 
@@ -9,7 +9,7 @@ IRSensor::IRSensor(int pin, long interval) {
 
 void IRSensor::Update()
 {
-	// check to see if it's time to change the state of the LED
+	// check to see if it's time to measure distance
 	unsigned long currentMillis = millis();
 
 	if(currentMillis - previousMillis >= intervalOfUpdate)
@@ -18,24 +18,20 @@ void IRSensor::Update()
 		previousMillis = currentMillis;  // Remember the time
 	}
 }
-double IRSensor::getCurrentValue() {
+
+int IRSensor::getCurrentValue() {
 	return distValue;
 }
 
 double IRSensor::getDistance() {
-	double V = 0;
   //use medial filter
   int arr[numOfMes];
   for (byte i = 0; i < numOfMes; i++) {
-    //V += analogRead(irPin);
     arr[i] = 6787 / analogRead(irPin);
   }	
   
   qsort(arr, numOfMes, sizeof(int), compare);
   
-  //V /= numOfMes;
-  //V -= compensation;
-	//return 6787 / V;
   return arr[2];
 }
 
@@ -51,4 +47,3 @@ int IRSensor::compare( const void* a, const void* b)
   else 
     return 1;
 }
-

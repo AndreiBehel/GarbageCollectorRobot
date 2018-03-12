@@ -6,32 +6,30 @@
 #include "Battery.h"
 #include "HttpServer.h"
 
-//#include <MsTimer2.h>
-
 /* Change these to match your WiFi network */
 const char mySSID[] = "MEIZU";
 const char myPassword[] = "641_7540";
 
 /*Motor connection*/
-const int LEFT_DIR_PIN = 4;
-const int LEFT_PWM_PIN = 5;
+const byte LEFT_DIR_PIN = 4;
+const byte LEFT_PWM_PIN = 5;
  
-const int RIGHT_DIR_PIN = 7; 
-const int RIGHT_PWM_PIN = 6;
+const byte RIGHT_DIR_PIN = 7; 
+const byte RIGHT_PWM_PIN = 6;
 
-const int FRONT_IR_PIN = A0;
-const int BACK_IR_PIN = A1;
+const byte FRONT_IR_PIN = A0;
+const byte BACK_IR_PIN = A1;
 
 /*Servo pin connection*/
-const int SERVO_PIN = 10;
+const byte SERVO_PIN = 10;
 
-const int ULTRASONIC_PIN = 9; 
+const byte ULTRASONIC_PIN = 9; 
 
-const int BUTTON_OP_PIN = 9;
-const int CLOSE_DETECTOR_PIN = 20;
+const byte BUTTON_OP_PIN = 9;
+const byte CLOSE_DETECTOR_PIN = 20;
 
 //Piezo Speaker
-const int BUZER_PIN = 9; 
+const byte BUZER_PIN = 9; 
 
 /*
  * Initialization of classes
@@ -52,9 +50,6 @@ void setup() {
   battery.begin(5000, 1.68);
   opSystem.init();
   setupWiFI();
-  
-  //MsTimer2::set(500, interrupt);
-  //MsTimer2::start();
 }
 
 void loop() {
@@ -66,14 +61,6 @@ void loop() {
   mt.Update();
   opSystem.Update();
 }
-
-/*void interrupt(int timer) {
-  frIrSensor.Update();
-  bcIrSensor.Update();
-
-  mt.Update();
-  //opSystem.Update();
-}*/
 
 void setupWiFI() 
 {

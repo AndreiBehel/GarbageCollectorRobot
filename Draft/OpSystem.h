@@ -8,6 +8,7 @@ private:
   
   long intervalBeforeClosing;
   unsigned long previousMillis;
+  unsigned int openConter;
   
   boolean state;
   boolean prevState;
@@ -17,10 +18,15 @@ private:
   void Op();
   void Cl();
 public:
-	OpSystem(int servo, int buttonCh);
+	OpSystem(byte servo, byte buttonCh);
 	void Update();
   void Open();
   void Close();
   void init();
+  
+  boolean isOpened();
+  unsigned int getOpenCount() {
+    return openConter;
+  }
 };
 #endif

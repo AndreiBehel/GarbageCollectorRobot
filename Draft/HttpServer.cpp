@@ -97,17 +97,17 @@ void HttpServer::send200(char* str)
 void HttpServer::receive()
 {
   if (wifly->available() > 0) {
-    byte code = wifly->multiMatch_P(20, 10, F("GET /f"), F("GET /b"), F("GET /w"), F("GET /s"),
-    F("GET /m"), F("GET /o"), F("GET /k"), F("GET /t"), F("GET /c"), F("GET / "));
+    byte code = wifly->multiMatch_P(20, 12, F("GET /f"), F("GET /b"), F("GET /w"), F("GET /s"),
+    F("GET /m"), F("GET /o"), F("GET /k"), F("GET /t"), F("GET /c"), F("GET / "), F("GET /n"), F("GET /i"));
     
     switch(code) {
       case 0:
         Serial.println(F("#frIr"));
-        send200(dtostrf(frIrSensor -> getCurrentValue(), 0, 2, convBuff));
+        send200(itoa(frIrSensor -> getCurrentValue(), buf, 10));
         break;
       case 1:
         Serial.println(F("#bcIr"));
-        send200(dtostrf(bcIrSensor -> getCurrentValue(), 0, 2, convBuff));
+        send200(itoa(bcIrSensor -> getCurrentValue(), buf, 10));
         break;
       case 2:
         Serial.println(F("#w"));
@@ -153,8 +153,17 @@ void HttpServer::receive()
         Serial.println(F("#page"));
         sendIndex();
         break;
+      case 10:
+        Serial.println(F("#network"));
+        send200(gatherNetworkInfo());
+        break;
+      case 11:
+        Serial.println(F("#info"));
+        send200(gatherRobotInfo());
+        break;
       default: /* timeout */
         //Serial.println("#timeout");
+        
         break;
     }
   }
@@ -236,3 +245,30 @@ bool HttpServer::parseReqStr(char* str, byte* params, byte pos) {
   return correct;
 }
 
+char* HttpServer::gatherRobotInfo() {
+  char data[150];
+  sprintf(data,"frIr=%d&bcIr=%d&chr=%d&temp=%d&fullness=%d&mtr=%d&opSys=%d",
+    frIrSensor -> getCurrentValue(),
+    bcIrSensor -> getCurrentValue(),
+    80,
+    21,
+    5,
+    mt->moving(),
+    opSystem->isOpened());
+    
+  return data;
+}
+
+char* HttpServer::gatherNetworkInfo() {
+  char data[150];
+
+  sprintf(data, "DevID=%s", wifly->getDeviceID(buf, sizeof(buf)));
+  sprintf(data + strlen(data), "&IP=%s&Port=%d", wifly->getIP(buf, sizeof(buf)), wifly->getPort());
+  sprintf(data + strlen(data), "&Mask=%s", wifly->getNetmask(buf, sizeof(buf)));
+  sprintf(data + strlen(data), "&Gate=%s", wifly->getGateway(buf, sizeof(buf)));
+  //sprintf(data + strlen(data), "&DNS=%s", wifly->getDNS(buf, sizeof(buf)));
+  sprintf(data + strlen(data), "&MAC=%s&Rate=%lu&Pow=%d", wifly->getMAC(buf, sizeof(buf)), wifly->getRate(), wifly->getTxPower());
+  sprintf(data + strlen(data), "&Time=%s", wifly->getTime(buf, sizeof(buf)));
+
+  return data;
+}

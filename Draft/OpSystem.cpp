@@ -1,11 +1,13 @@
 #include "OpSystem.h"
-OpSystem::OpSystem(int servoPin, int buttonCh) {
+OpSystem::OpSystem(byte servoPin, byte buttonCh) {
 	buttonCheck = buttonCh;
 	servPin = servoPin;
  
   intervalBeforeClosing = 60000;
   prevState = false;
   state = false; 
+
+  openConter = 0;
 }
 
 void OpSystem::Update() {
@@ -44,6 +46,7 @@ void OpSystem::Op() {
   servo.write(170);
   delay(900);
   servo.detach();
+  openConter++;
 }
 
 void OpSystem::Cl() {
@@ -53,3 +56,6 @@ void OpSystem::Cl() {
   servo.detach();
 }
 
+boolean OpSystem::isOpened() {
+  return state;
+}

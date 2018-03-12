@@ -28,10 +28,11 @@ private:
   byte getTime(char* str, byte pos);
   bool parseReqStr(char* str, byte* params, byte pos);
   byte params[5];
-  
+
+  char* gatherNetworkInfo();
+  char* gatherRobotInfo();
 public:
 	void receive();
 	HttpServer(Motor* m, OpSystem* o, IRSensor* f, IRSensor* b, Battery* bat, WiFly* wifly);
-  
 };
 #endif
