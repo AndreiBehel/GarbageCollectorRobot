@@ -20,6 +20,7 @@ private:
   char buf[80];
   
 	void sendIndex();
+  void sendIndex2();
 	void sendGreeting(char *name);
 	void send404();
   void send200(char* str);
