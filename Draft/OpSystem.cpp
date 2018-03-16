@@ -59,3 +59,13 @@ void OpSystem::Cl() {
 boolean OpSystem::isOpened() {
   return state;
 }
+
+unsigned int OpSystem::lastOpened() {
+  return (millis() - previousMillis) / 60000;
+}
+
+unsigned int OpSystem::getOpenCount() {
+  return openConter;
+}
+
+

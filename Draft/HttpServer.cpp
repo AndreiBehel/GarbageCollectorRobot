@@ -23,50 +23,53 @@ void HttpServer::sendIndex()
     wifly->println(F("Connection: keep-alive"));
     wifly->println();
     
-    wifly->sendChunkln(F("<!DOCTYPE html><html lang=\"en\"><head> <meta charset=\"UTF-8\"> <title"));
-    wifly->sendChunkln(F(">Robot contol page</title> <style> .content { background-color: #f0f0f0"));
-    wifly->sendChunkln(F("; max-width: 800px; margin: auto; text-align: center; border: 1px solid black"));
-    wifly->sendChunkln(F("; padding: 0 20px; } .stat { box-sizing: border-box; padding: 10px 0; margin: 10px 10px"));
-    wifly->sendChunkln(F("; width: 80px; height: 80px; border-radius: 10px 10px 0 0; display: inline-block"));
-    wifly->sendChunkln(F("; font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif"));
-    wifly->sendChunkln(F("; } .fullness { float: left; background: #ffcc5c; } .temp { background: #588c7e"));
-    wifly->sendChunkln(F("; margin: 10px auto; } .charge { float: right; background: #d96459; } .table { margin: 20px"));
-    wifly->sendChunkln(F("; padding: 10px 10px; border: 1px solid lightgray; } .left { clear: both"));
-    wifly->sendChunkln(F("; float: left; } .right { float: right; } table { border-collapse: collapse"));
-    wifly->sendChunkln(F("; } td { text-align: left; padding: 0px 20px; border-left: 1px solid #585858"));
-    wifly->sendChunkln(F("; } th { text-align: left; padding: 10px; } caption { font-weight: bold"));
-    wifly->sendChunkln(F("; border-bottom: 1px solid #585858; padding: 10px; } tr:nth-child(even"));
-    wifly->sendChunkln(F(") { background: #ffeead; } .clearfix::after { content: \"\"; display: table"));
-    wifly->sendChunkln(F("; clear: both; } .name { background: white; font-size: 14px; padding: 2px"));
-    wifly->sendChunkln(F("; text-align: center; } .value { height: 40px; font-size: 22px; color: white"));
-    wifly->sendChunkln(F("; } </style></head><body onload=\"stReq();\"><div class=\"content clearfix\""));
-    wifly->sendChunkln(F("> <div class=\"important\"> <div class=\"stat fullness\"> <div class=\"value\""));
-    wifly->sendChunkln(F(">100%</div> <div class=\"name\">Fullness</div> </div> <div class=\"stat charge\""));
-    wifly->sendChunkln(F("> <div class=\"value\">50%</div> <div class=\"name\">Charge</div> </div"));
-    wifly->sendChunkln(F("> <div class=\"stat temp\"> <div class=\"value\">21пїЅC</div> <div class=\"name\""));
-    wifly->sendChunkln(F(">Temperature</div> </div> </div> <div class=\"left table\"> <table id=\"Rob\""));
-    wifly->sendChunkln(F("> <caption>Robot data</caption> <tr> <th>Front IR sensor</th> <td>cm</td"));
-    wifly->sendChunkln(F("> </tr> <tr> <th>Back IR sensor</th> <td>cm</td> </tr> <tr> <th>Charge level</th"));
-    wifly->sendChunkln(F("> <td>%</td> </tr> <tr> <th>Temperature</th> <td>пїЅC</td> </tr> <tr> <th"));
-    wifly->sendChunkln(F(">Fullness sensor</th> <td></td> </tr> <tr> <th>Moving</th> <td></td> </tr"));
-    wifly->sendChunkln(F("> <tr> <th>Opened</th> <td></td> </tr> </table> </div> <div class=\"right table\""));
-    wifly->sendChunkln(F("> <table id=\"Net\"> <caption>Network properties</caption> <tr> <th>Device id</th"));
-    wifly->sendChunkln(F("> <td></td> </tr> <tr> <th>IP</th> <td></td> </tr> <tr> <th>Port</th> <td"));
-    wifly->sendChunkln(F("></td> </tr> <tr> <th>Gateway</th> <td></td> </tr> <tr> <th>Netmask</th"));
-    wifly->sendChunkln(F("> <td></td> </tr> <tr> <th>MAC</th> <td></td> </tr> <tr> <th>WiFi data rate</th"));
-    wifly->sendChunkln(F("> <td>bits/sec</td> </tr> <tr> <th>Transmit power</th> <td>dBm</td> </tr"));
-    wifly->sendChunkln(F("> <tr> <th>Time</th> <td></td> </tr> </table> </div></div><script> function stReq("));
-    wifly->sendChunkln(F(") { setTimeout(reqNetInfo, 900); } function reqNetInfo() { try { var req = new XMLHttpRequest("));
-    wifly->sendChunkln(F("); req.onreadystatechange = function () { if (this.readyState == 4 && this.status == 200 && this.responseText != null"));
-    wifly->sendChunkln(F(") { let arr = this.responseText.split('&'); let table = window.document.getElementById('Net'"));
-    wifly->sendChunkln(F("); arr.forEach((el, index) => { table.rows[index].cells[1].innerHTML = el.split('='"));
-    wifly->sendChunkln(F(")[1] + table.rows[index].cells[1].innerHTML; }); var reqR = new XMLHttpRequest("));
-    wifly->sendChunkln(F("); reqR.onreadystatechange = function () { if (this.readyState == 4 && this.status == 200 && this.responseText"));
-    wifly->sendChunkln(F(") { let arr = this.responseText.split('&'); let table = window.document.getElementById('Rob'"));
-    wifly->sendChunkln(F("); arr.forEach((el, index) => { table.rows[index].cells[1].innerHTML = el.split('='"));
-    wifly->sendChunkln(F(")[1] + table.rows[index].cells[1].innerHTML; }); } }; reqR.open('GET', 'i', true"));
-    wifly->sendChunkln(F("); reqR.send(); } }; req.open('GET', 'n', true); req.send(); } catch (ex"));
-    wifly->sendChunkln(F(") { window.alert(ex); } }</script></body></html>"));
+    wifly->sendChunkln(F("<!DOCTYPE html><html lang=\"en\"><head> <meta charset=\"UTF-8\"> <title>"));
+    wifly->sendChunkln(F("Robot contol page</title> <style> .content { background-color: #f0f0f0;"));
+    wifly->sendChunkln(F(" max-width: 800px; margin: auto; text-align: center; border: 1px solid black;"));
+    wifly->sendChunkln(F(" padding: 0 20px; } .stat { box-sizing: border-box; padding: 10px 0; margin: 10px 20px;"));
+    wifly->sendChunkln(F(" width: 80px; height: 80px; border-radius: 10px 10px 0 0; display: inline-block;"));
+    wifly->sendChunkln(F(" font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;"));
+    wifly->sendChunkln(F(" } .fullness { float: left; background: #ffcc5c; } .temp { background: #588c7e;"));
+    wifly->sendChunkln(F(" margin: 10px auto; } .charge { float: right; background: #d96459; } .table { margin: 20px;"));
+    wifly->sendChunkln(F(" padding: 10px 10px; border: 1px solid lightgray; } .left { clear: both;"));
+    wifly->sendChunkln(F(" float: left; } .right { float: right; } table { border-collapse: collapse;"));
+    wifly->sendChunkln(F(" } td { text-align: left; padding: 0px 20px; border-left: 1px solid #585858;"));
+    wifly->sendChunkln(F(" } th { text-align: left; padding: 10px; } caption { font-weight: bold;"));
+    wifly->sendChunkln(F(" border-bottom: 1px solid #585858; padding: 10px; } tr:nth-child(even)"));
+    wifly->sendChunkln(F(" { background: #ffeead; } .clearfix::after { content: \"\"; display: table;"));
+    wifly->sendChunkln(F(" clear: both; } .name { background: white; font-size: 14px; padding: 2px;"));
+    wifly->sendChunkln(F(" text-align: center; } .value { height: 40px; font-size: 22px; color: white;"));
+    wifly->sendChunkln(F(" } </style></head><body onload=\"stReq();\"><div class=\"content clearfix\">"));
+    wifly->sendChunkln(F(" <div class=\"important\"> <div class=\"stat fullness\"> <div class=\"value\" id=\"f\">"));
+    wifly->sendChunkln(F("- of 5</div> <div class=\"name\">Fullness</div> </div> <div class=\"stat charge\">"));
+    wifly->sendChunkln(F(" <div class=\"value\" id=\"c\">-%</div> <div class=\"name\">Charge</div>"));
+    wifly->sendChunkln(F(" </div> <div class=\"stat temp\"> <div class=\"value\" id=\"t\">-&#8451;"));
+    wifly->sendChunkln(F("</div> <div class=\"name\">Temperature</div> </div> </div> <div class=\"left table\">"));
+    wifly->sendChunkln(F(" <table id=\"Rob\"> <caption>Robot data</caption> <tr> <th>Front IR sensor</th>"));
+    wifly->sendChunkln(F(" <td>cm</td> </tr> <tr> <th>Back IR sensor</th> <td>cm</td> </tr> <tr>"));
+    wifly->sendChunkln(F(" <th>Charge level</th> <td>%</td> </tr> <tr> <th>Temperature</th> <td>"));
+    wifly->sendChunkln(F("</td> </tr> <tr> <th>Fullness sensor</th> <td></td> </tr> <tr> <th>Moving</th>"));
+    wifly->sendChunkln(F(" <td></td> </tr> <tr> <th>Opened</th> <td></td> </tr> </table> </div> <div class=\"right table\">"));
+    wifly->sendChunkln(F(" <table id=\"Net\"> <caption>Network properties</caption> <tr> <th>Device id</th>"));
+    wifly->sendChunkln(F(" <td></td> </tr> <tr> <th>IP</th> <td></td> </tr> <tr> <th>Port</th> <td>"));
+    wifly->sendChunkln(F("</td> </tr> <tr> <th>Gateway</th> <td></td> </tr> <tr> <th>Netmask</th>"));
+    wifly->sendChunkln(F(" <td></td> </tr> <tr> <th>MAC</th> <td></td> </tr> <tr> <th>WiFi data rate</th>"));
+    wifly->sendChunkln(F(" <td>bits/sec</td> </tr> <tr> <th>Transmit power</th> <td>dBm</td> </tr>"));
+    wifly->sendChunkln(F(" <tr> <th>Time</th> <td></td> </tr> </table> </div></div><script> function stReq()"));
+    wifly->sendChunkln(F(" { setTimeout(reqNetInfo, 500); } function reqNetInfo() { try { var req = new XMLHttpRequest()"));
+    wifly->sendChunkln(F("; req.onreadystatechange = function () { if (this.readyState == 4 && this.status == 200 && this.responseText)"));
+    wifly->sendChunkln(F(" { let arr = this.responseText.split('&'); let table = window.document.getElementById('Net')"));
+    wifly->sendChunkln(F("; arr.forEach((el, index) => { table.rows[index].cells[1].innerHTML = el.split('=')"));
+    wifly->sendChunkln(F("[1] + table.rows[index].cells[1].innerHTML; }); var reqR = new XMLHttpRequest()"));
+    wifly->sendChunkln(F("; reqR.onreadystatechange = function () { if (this.readyState == 4 && this.status == 200 && this.responseText)"));
+    wifly->sendChunkln(F(" { let arr = this.responseText.split('&'); let table = window.document.getElementById('Rob')"));
+    wifly->sendChunkln(F("; arr.forEach((el, index) => { let pair = el.split('='); table.rows[index].cells[1].innerHTML = pair[1] + table.rows[index].cells[1].innerHTML;"));
+    wifly->sendChunkln(F(" if (pair[0] == 'temp') { window.document.getElementById('t').innerHTML = pair[1] + '&#8451;'"));
+    wifly->sendChunkln(F("; } if (pair[0] == 'chr') { window.document.getElementById('c').innerHTML = pair[1] + '%';"));
+    wifly->sendChunkln(F(" } if (pair[0] == 'full') { window.document.getElementById('f').innerHTML = pair[1] + ' of 5';"));
+    wifly->sendChunkln(F(" } }); } }; reqR.open('GET', 'i', true); reqR.send(); } }; req.open('GET', 'n', true)"));
+    wifly->sendChunkln(F("; req.send(); } catch (ex) { window.alert(ex); } }</script></body></html>"));
+
     wifly->sendChunkln();
 }
 
@@ -253,7 +256,7 @@ bool HttpServer::parseReqStr(char* str, byte* params, byte pos) {
 
 char* HttpServer::gatherRobotInfo() {
   char data[150];
-  sprintf(data,"frIr=%d&bcIr=%d&chr=%d&temp=%d&fullness=%d&mtr=%d&opSys=%d",
+  sprintf(data,"frIr=%d&bcIr=%d&chr=%d&temp=%d&full=%d&mtr=%d&opSys=%d",
     frIrSensor -> getCurrentValue(),
     bcIrSensor -> getCurrentValue(),
     80,

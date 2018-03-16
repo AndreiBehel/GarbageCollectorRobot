@@ -25,8 +25,7 @@ public:
   void init();
   
   boolean isOpened();
-  unsigned int getOpenCount() {
-    return openConter;
-  }
+  unsigned int lastOpened();
+  unsigned int getOpenCount();
 };
 #endif
