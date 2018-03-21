@@ -11,6 +11,7 @@ Motor::Motor(byte leftDir, byte rightDir, byte leftPwm, byte rightPwm) {
     pinMode(rightMotorPwmPin, OUTPUT);
     
     stopMoving();
+    lastMoveMillis = millis();
   }
 
   void Motor::moveLeft(bool leftDir, int leftSpeed, unsigned int duration) {
@@ -37,10 +38,7 @@ Motor::Motor(byte leftDir, byte rightDir, byte leftPwm, byte rightPwm) {
     digitalWrite(leftMotorPwmPin, LOW);
     digitalWrite(rightMotorPwmPin, LOW);
 
-  	intervalOfUpdate = duration;
-    previousMillis = millis();
-    
-  	isMoving = true;
+    updateState(duration); 
   }
   
   void Motor::moveBc(unsigned int duration) {
@@ -49,10 +47,7 @@ Motor::Motor(byte leftDir, byte rightDir, byte leftPwm, byte rightPwm) {
     digitalWrite(leftMotorPwmPin, HIGH);
     digitalWrite(rightMotorPwmPin, HIGH);
     
-  	intervalOfUpdate = duration;
-    previousMillis = millis();
-    
-  	isMoving = true;    
+    updateState(duration);
   }
   
   void Motor::Update() {
@@ -70,7 +65,9 @@ Motor::Motor(byte leftDir, byte rightDir, byte leftPwm, byte rightPwm) {
     digitalWrite(rightMotorDirPin, LOW);
 
 	  isMoving = false;
+    lastMoveMillis = intervalOfUpdate;
   }
+  
   void Motor::move(bool leftDir, byte leftSpeed, bool rightDir, byte rightSpeed, unsigned int duration) {
     if(leftDir){
        digitalWrite(leftMotorDirPin, HIGH);
@@ -87,9 +84,22 @@ Motor::Motor(byte leftDir, byte rightDir, byte leftPwm, byte rightPwm) {
     analogWrite(leftMotorPwmPin, leftSpeed);
     analogWrite(rightMotorPwmPin, rightSpeed);
 
+    updateState(duration); 
+  }
+
+  void Motor::updateState(unsigned int duration) {
     intervalOfUpdate = duration;
+    if (isMoving)
+      lastMoveMillis = millis() - previousMillis;
     previousMillis = millis();
     
     isMoving = true;   
   }
+  
+boolean Motor::moving() {
+  return isMoving;
+}
 
+unsigned int Motor::getLastMoveMillis() {
+  return lastMoveMillis / 100;
+}

@@ -29,7 +29,7 @@ private:
   byte getTime(char* str, byte pos);
   bool parseReqStr(char* str, byte* params, byte pos);
   byte params[5];
-
+  byte prevParams[5];
   char* gatherNetworkInfo();
   char* gatherRobotInfo();
 public:

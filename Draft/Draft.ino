@@ -26,10 +26,6 @@ const byte SERVO_PIN = 10;
 const byte ULTRASONIC_PIN = 9; 
 
 const byte BUTTON_OP_PIN = 9;
-const byte CLOSE_DETECTOR_PIN = 20;
-
-//Piezo Speaker
-const byte BUZER_PIN = 9; 
 
 /*
  * Initialization of classes
@@ -40,7 +36,7 @@ WiFly wifly;
 Motor mt(LEFT_DIR_PIN, RIGHT_DIR_PIN, LEFT_PWM_PIN, RIGHT_PWM_PIN);
 IRSensor frIrSensor(FRONT_IR_PIN, 100);
 IRSensor bcIrSensor(BACK_IR_PIN, 100);
-OpSystem opSystem(SERVO_PIN, CLOSE_DETECTOR_PIN);
+OpSystem opSystem(SERVO_PIN);
 Battery battery(7400, 8400, A0, 3);
 HttpServer httpserver(&mt, &opSystem, &frIrSensor, &bcIrSensor, &battery, &wifly);
 

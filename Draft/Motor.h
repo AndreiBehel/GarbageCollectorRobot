@@ -1,10 +1,11 @@
 #ifndef MOTOR_H
-  #define MOTOR_H
+#define MOTOR_H
 #include <Arduino.h>
 class Motor {
 private:
   long intervalOfUpdate;
   unsigned long previousMillis;
+  long lastMoveMillis;
   
   byte leftMotorDirPin;
   byte rightMotorDirPin;
@@ -12,6 +13,7 @@ private:
   byte rightMotorPwmPin;
   
   bool isMoving;  
+  void updateState(unsigned int duration);
 public:
   Motor(byte leftDir, byte rightDir, byte leftPwm, byte rightPwm);
   
@@ -23,9 +25,8 @@ public:
   void Update();
   void stopMoving();
 
-  boolean moving() {
-    return isMoving;
-  }
+  boolean moving();
+  unsigned int getLastMoveMillis(); 
 };
 
 #endif

@@ -111,15 +111,15 @@ void HttpServer::receive()
     
     switch(code) {
       case 0:
-        Serial.println(F("#frIr"));
+        //Serial.println(F("#frIr"));
         send200(itoa(frIrSensor -> getCurrentValue(), buf, 10));
         break;
       case 1:
-        Serial.println(F("#bcIr"));
+        //Serial.println(F("#bcIr"));
         send200(itoa(bcIrSensor -> getCurrentValue(), buf, 10));
         break;
       case 2:
-        Serial.println(F("#w"));
+        //Serial.println(F("#w"));
         wifly->gets(buf, sizeof(buf), 10);
         mt -> moveFr(getTime(buf, 1) * 100);
         send200(NULL);
@@ -131,43 +131,51 @@ void HttpServer::receive()
         send200(NULL);
         break;
       case 4:
-        Serial.println(F("#move"));
+        //Serial.println(F("#move"));
         wifly->gets(buf, sizeof(buf), 10);
+        for (byte i = 0; i < 5; i++) {
+          prevParams[i] = params[i];
+        }
         if(parseReqStr(buf, params, 1)) {
-          mt -> move(params[0], params[1], params[2], params[3], params[4] * 100);
-          send200(NULL);
+          if (params[4]) {
+            mt -> move(params[0], params[1], params[2], params[3], params[4] * 100);
+          } else {
+            mt -> stopMoving();
+          }
+          sprintf(buf, "a=%d&b=%d&c=%d&d=%d&t=%d", prevParams[0], prevParams[1], prevParams[2], prevParams[3], mt -> getLastMoveMillis());
+          send200(buf);
         } else {
           send404();
         }
         break;
       case 5:
-        Serial.println(F("#open"));
+        //Serial.println(F("#open"));
         opSystem -> Open();
         send200(NULL);
         break;
       case 6:
-        Serial.println(F("#close"));
+        //Serial.println(F("#close"));
         opSystem -> Close();
         send200(NULL);
         break;
       case 7:
-        Serial.println(F("#temperature"));
+        //Serial.println(F("#temperature"));
         send200(dtostrf(21.2, 0, 2, convBuff));
         break;
       case 8:
-        Serial.println(F("#charge"));
+        //Serial.println(F("#charge"));
         send200(dtostrf(83.5, 0, 2, convBuff));
         break;
       case 9:
-        Serial.println(F("#page"));
+        //Serial.println(F("#page"));
         sendIndex();
         break;
       case 10:
-        Serial.println(F("#network"));
+        //Serial.println(F("#network"));
         send200(gatherNetworkInfo());
         break;
       case 11:
-        Serial.println(F("#info"));
+        //Serial.println(F("#info"));
         send200(gatherRobotInfo());
         break;
       default: /* timeout */
@@ -275,7 +283,6 @@ char* HttpServer::gatherNetworkInfo() {
   sprintf(data + strlen(data), "&IP=%s&Port=%d", wifly->getIP(buf, sizeof(buf)), wifly->getPort());
   sprintf(data + strlen(data), "&Mask=%s", wifly->getNetmask(buf, sizeof(buf)));
   sprintf(data + strlen(data), "&Gate=%s", wifly->getGateway(buf, sizeof(buf)));
-  //sprintf(data + strlen(data), "&DNS=%s", wifly->getDNS(buf, sizeof(buf)));
   sprintf(data + strlen(data), "&MAC=%s&Rate=%lu&Pow=%d", wifly->getMAC(buf, sizeof(buf)), wifly->getRate(), wifly->getTxPower());
   sprintf(data + strlen(data), "&Time=%s", wifly->getTime(buf, sizeof(buf)));
 

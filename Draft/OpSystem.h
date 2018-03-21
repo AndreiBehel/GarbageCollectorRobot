@@ -13,12 +13,11 @@ private:
   boolean state;
   boolean prevState;
   Servo servo;
-  byte buttonCheck;
 
   void Op();
   void Cl();
 public:
-	OpSystem(byte servo, byte buttonCh);
+	OpSystem(byte servo);
 	void Update();
   void Open();
   void Close();

@@ -1,6 +1,5 @@
 #include "OpSystem.h"
-OpSystem::OpSystem(byte servoPin, byte buttonCh) {
-	buttonCheck = buttonCh;
+OpSystem::OpSystem(byte servoPin) {
 	servPin = servoPin;
  
   intervalBeforeClosing = 60000;
